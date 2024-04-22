@@ -20,7 +20,7 @@ Research based on the official version of this simulator is currently ongoing.
 ### Usage
 
 Please note that this beta version is primarily for developmental use and may contain bugs or incomplete features. Users are advised to proceed with caution and are encouraged to contact the authors for more information or to discuss potential collaborations.
-
+The file containing the necessary functions for simulating ABP signal artifacts, named [artifact_generator.py](lib/artifact_generator.py), is located in the [lib](lib) folder of the repository. This Python script includes all the core functionalities required for generating artifacts in Arterial Blood Pressure (ABP) signals for research and testing purposes.
 
 
 **Unauthorized Use Prohibited**: Unauthorized use, duplication, or distribution of this software and its associated documentation is strictly prohibited without prior written permission from the author(s). Please contact the author(s) to obtain permission before using this software in any manner not explicitly authorized.
