@@ -1,0 +1,67 @@
+sec: '90s'
+data_types:
+  - 'Clean'
+  - 'Noise'
+name_list:
+  - 'uncleaned'
+  - 'ABP_ABPd'
+  - 'ABP_AMP'
+  - 'ABP_ABPd_AMP'
+  - 'HIVAE'
+  - 'GPVAE'
+  - 'BDC'
+  - 'SNM'
+dataset: ['mimic', 'vitaldb']
+dtw_version: ['DTW', 'without_DTW']
+
+data_root: '../../../../A.Data'
+
+paths:
+  uncleaned:
+    base_path: '{data_root}/A3.DownstreamTask/{dataset}_Ext_Valid_data/DTW_Input'
+    file_pattern:
+      hypo: 'DTW_HYPO_{data_type}_{sec}.npy'
+      nonhypo: 'DTW_NonHYPO_{data_type}_{sec}.npy'
+    noise:
+      base_path: '{data_root}/A4.Tmp_DownstreamTaskData_Add/{dataset}/AddNoiseData'
+      file_pattern:
+        hypo: 'HYPO_Noise_X_{sec}.npy'
+        nonhypo: 'NonHYPO_Noise_X_{sec}.npy'
+    idx:
+      base_path: '{data_root}/A4.Tmp_DownstreamTaskData_Add/{dataset}/AddNoiseData_pred'
+      file_pattern:
+        hypo: 'rand_{ids}ids_for_{sec}_HYPO_add.npy'
+        nonhypo: 'rand_{ids}ids_for_{sec}_NonHYPO_add.npy'
+      ids:
+        mimic: 30
+        vitaldb: 50
+
+  others:
+    base_path: '{data_root}/A3.DownstreamTask/{dataset}_Ext_Valid_data/DTW_Input/3090_pred{dtw_suffix}'
+    file_pattern:
+      hypo: '3090_{dtw_prefix}{name}_HYPO_{data_type}_{sec}.npy'
+      nonhypo: '3090_{dtw_prefix}{name}_NonHYPO_{data_type}_{sec}.npy'
+    noise:
+      base_path: '{data_root}/A4.Tmp_DownstreamTaskData_Add/{dataset}/AddNoiseData_pred'
+      file_pattern:
+        DTW:
+          hypo: '3090_{dtw_prefix}{name}_HYPO_Noise_{sec}_add.npy'
+          nonhypo: '3090_{dtw_prefix}{name}_NonHYPO_Noise_{sec}_add.npy'
+        without_DTW:
+          hypo: '3090_{name}_HYPO_Noise_{sec}_add.npy'
+          nonhypo: '3090_{name}_NonHYPO_Noise_{sec}_add.npy'
+    idx:
+      base_path: '{data_root}/A4.Tmp_DownstreamTaskData_Add/{dataset}/AddNoiseData_pred'
+      file_pattern:
+        hypo: 'rand_{ids}ids_for_{sec}_HYPO_add.npy'
+        nonhypo: 'rand_{ids}ids_for_{sec}_NonHYPO_add.npy'
+      ids:
+        mimic: 30
+        vitaldb: 50
+
+model:
+  path: './ModelResults/ModelTrained_ShapeBin_1047_0.36678_0.91418_0.00266_0.39022_0.90345_0.00275.hdf5'
+  input: 'Input'
+  output: 'BinOut'
+  input_shape:
+    - 9000
