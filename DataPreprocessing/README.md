@@ -1,6 +1,6 @@
 # Data Preprocessing
 
-This repository contains scripts to download, process, and prepare MIMIC-III waveform data for training machine learning models. The scripts are organized to follow a pipeline that ensures high-quality data for model training and validation.
+This repository contains scripts to download, process, and prepare MIMIC-III waveform data for training models. The scripts are organized to follow a pipeline that ensures high-quality data for model training and validation.
 
 ## Scripts and Workflow
 
@@ -48,7 +48,7 @@ This script consolidates the signals stored in the `high_qual_60s` folder, split
 python split_train_valid_dataset.py
 ```
 
-## Directory Structure
+## Relevant Directory Structure
 
 - `DataPreprocessing/`
   - `download_mimic3.py`
@@ -62,9 +62,9 @@ python split_train_valid_dataset.py
 
 ## Requirements
 
-- Python 3.x
+- Python 3.8
 - Required Python packages are listed in the scripts and will be installed if not already present:
-  - `numpy`
+  - `numpy 1.19`
   - `wfdb`
   - `tqdm`
   - `scipy`
