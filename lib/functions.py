@@ -60,17 +60,17 @@ def compute_kld(true_sig, pred_sig):
 
     return kld
 
-def compare_partial_kld(true_sig, pred_sig, segment_length=500):
+def compare_partial_kld(true_sig, pred_sig, subpart_len=500):
     min_len = min(len(true_sig), len(pred_sig))
     avg_kld = 0.0
     max_kld = 0.0
-    seg_range = min_len // segment_length
+    seg_range = min_len // subpart_len
 
-    if seg_range == 0:
-        return avg_kld, max_kld  # Segment length is greater than signal length
+    if seg_range == 0:  # if sub-part length is greater than signal length
+        return avg_kld, max_kld
 
     for i in range(seg_range):
-        kld = compute_kld(true_sig[i*segment_length:(i+1)*segment_length], pred_sig[i*segment_length:(i+1)*segment_length])
+        kld = compute_kld(true_sig[i*subpart_len:(i+1)*subpart_len], pred_sig[i*subpart_len:(i+1)*subpart_len])
         avg_kld += kld
         if kld > max_kld:
             max_kld = kld
@@ -78,12 +78,12 @@ def compare_partial_kld(true_sig, pred_sig, segment_length=500):
 
     return avg_kld, max_kld
 
-def compute_kld_vector(true_set, pred_set, segment_length=500):
+def compute_kld_vector(true_set, pred_set, subpart_len=500):
     if len(true_set) != len(pred_set):
         print("Error: The lengths of the two lists are not equal.")
         return
 
-    kld_vector = [compare_partial_kld(true_set[i], pred_set[i], segment_length) for i in range(len(true_set))]
+    kld_vector = [compare_partial_kld(true_set[i], pred_set[i], subpart_len) for i in range(len(true_set))]
     kld_vector = np.array(kld_vector)
     kld_mean = np.mean(kld_vector[:, 0])
     kld_max = np.mean(kld_vector[:, 1])
