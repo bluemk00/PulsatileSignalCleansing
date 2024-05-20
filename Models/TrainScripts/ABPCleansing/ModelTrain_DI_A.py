@@ -46,13 +46,13 @@ if __name__ == "__main__":
 
     # Load and normalize data based on model type
     if modeltype == 'DI':
-        TrSet = np.load('../../TrainDataSet/MIMIC_ART_TrSet.npy')
-        ValSet = np.load('../../TrainDataSet/MIMIC_ART_ValSet.npy')
+        TrSet = np.load('../../TrainDataSet/MIMIC_ABP/MIMIC_ART_TrSet.npy')
+        ValSet = np.load('../../TrainDataSet/MIMIC_ABP/MIMIC_ART_ValSet.npy')
         TrSet = (TrSet - 20.0) / (220.0 - 20.0)
         ValSet = (ValSet - 20.0) / (220.0 - 20.0)
     elif modeltype == 'DA':
-        TrSet = np.load('../../TrainDataSet/MIMIC_PPG_TrSet.npy')
-        ValSet = np.load('../../TrainDataSet/MIMIC_PPG_ValSet.npy')
+        TrSet = np.load('../../TrainDataSet/MIMIC_PPG/MIMIC_PPG_TrSet.npy')
+        ValSet = np.load('../../TrainDataSet/MIMIC_PPG/MIMIC_PPG_ValSet.npy')
 
     print('************************************************')
     print(f'    Train set total {TrSet.shape[0]} size   ')

@@ -46,13 +46,22 @@ class ModelStructure:
         SaveFilePath (str): File path template for model checkpoints.
         """
         if self.outptype == 0:
-            SaveFolder = f'../../TrainedModels/{self.modeltype}_A/'
+            if self.modeltype == 'DI':
+                SaveFolder = f'../../TrainedModels/ABPCleansing/{self.modeltype}_A/'
+            else:
+                SaveFolder = f'../../TrainedModels/PPGCleansing/{self.modeltype}_A/'
             SaveFilePath = f'{self.modeltype}_A_{{epoch:04}}_val{{val_loss:.7f}}_valOut{{val_Output_loss:.7f}}_valDiff{{val_Diff_loss:.7f}}_loss{{loss:.7f}}_Out{{Output_loss:.7f}}_Diff{{Diff_loss:.7f}}.hdf5'
         elif self.outptype == 1:
-            SaveFolder = f'../../TrainedModels/{self.modeltype}_D/'
+            if self.modeltype == 'DI':
+                SaveFolder = f'../../TrainedModels/ABPCleansing/{self.modeltype}_D/'
+            else:
+                SaveFolder = f'../../TrainedModels/PPGCleansing/{self.modeltype}_D/'
             SaveFilePath = f'{self.modeltype}_D_{{epoch:04}}_val{{val_loss:.7f}}_valOut{{val_Output_loss:.7f}}_valAmp{{val_Amp_loss:.7f}}_loss{{loss:.7f}}_Out{{Output_loss:.7f}}_Amp{{Amp_loss:.7f}}.hdf5'
         elif self.outptype == 2:
-            SaveFolder = f'../../TrainedModels/{self.modeltype}/'
+            if self.modeltype == 'DI':
+                SaveFolder = f'../../TrainedModels/ABPCleansing/{self.modeltype}/'
+            else:
+                SaveFolder = f'../../TrainedModels/PPGCleansing/{self.modeltype}/'
             SaveFilePath = f'{self.modeltype}_{{epoch:04}}_val{{val_loss:.7f}}_valOut{{val_Output_loss:.7f}}_valDiff{{val_Diff_loss:.7f}}_valAmp{{val_Amp_loss:.7f}}_loss{{loss:.7f}}_Out{{Output_loss:.7f}}_Diff{{Diff_loss:.7f}}_Amp{{Amp_loss:.7f}}.hdf5'
         else:
             raise ValueError("Invalid outptype value. Must be 0, 1, or 2.")

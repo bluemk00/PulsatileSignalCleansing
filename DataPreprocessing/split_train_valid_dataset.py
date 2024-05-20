@@ -28,7 +28,7 @@ TrSet_ART = art_aggregate[split_idx:]
 ValSet_ART = art_aggregate[:split_idx]
 
 # Ensure the TrainDataSet directory exists
-train_data_dir = '../Models/TrainDataSet'
+train_data_dir = '../Models/TrainDataSet/MIMIC_ABP/'
 if not os.path.exists(train_data_dir):
     os.makedirs(train_data_dir)
     print("TrainDataSet directory created.")
@@ -44,6 +44,14 @@ np.random.shuffle(ppg_aggregate)
 split_idx = len(ppg_aggregate) // 5
 TrSet_PPG = ppg_aggregate[split_idx:]
 ValSet_PPG = ppg_aggregate[:split_idx]
+
+# Ensure the TrainDataSet directory exists
+train_data_dir = '../Models/TrainDataSet/MIMIC_PPG/'
+if not os.path.exists(train_data_dir):
+    os.makedirs(train_data_dir)
+    print("TrainDataSet directory created.")
+else:
+    print("TrainDataSet directory already exists.")
 
 # Save the PPG training and validation sets
 np.save(os.path.join(train_data_dir, 'MIMIC_PPG_TrSet.npy'), TrSet_PPG)
