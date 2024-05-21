@@ -1,8 +1,10 @@
+'''
+NN utils
+This is a modified version from the source: https://github.com/ratschlab/GP-VAE
+Modifications made by J. Kim
+'''
+
 import tensorflow as tf
-
-
-''' NN utils '''
-
 
 def make_nn(output_size, hidden_sizes):
     """ Creates fully connected neural network

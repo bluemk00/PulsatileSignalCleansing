@@ -1,8 +1,6 @@
 import os
 import subprocess
 import sys
-import numpy as np
-import pandas as pd
 
 # Ensure wfdb is installed
 try:
@@ -20,21 +18,52 @@ except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "tqdm"])
     from tqdm import tqdm
 
-if __name__ == "__main__":
+# Ensure numpy version is 1.19.x
+try:
+    import numpy as np
+    numpy_version = np.__version__
+    if numpy_version.split('.')[:2] != ['1', '19']:
+        print(f"Current numpy version is {numpy_version}. Downgrading to 1.19.5...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy==1.19.5"])
+        # Reload numpy to ensure the downgraded version is used
+        import importlib
+        importlib.reload(np)
+except ImportError:
+    print("numpy is not installed. Installing now...")
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy==1.19.5"])
+    import numpy as np
+
+# Ensure pandas version is 1.4 or lower
+try:
+    import pandas as pd
+    pandas_version = pd.__version__
+    if float('.'.join(pandas_version.split('.')[:2])) > 1.4:
+        print(f"Current pandas version is {pandas_version}. Downgrading to 1.4.0...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "pandas==1.4.0"])
+        # Reload pandas to ensure the downgraded version is used
+        import importlib
+        importlib.reload(pd)
+except ImportError:
+    print("pandas is not installed. Installing now...")
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "pandas==1.4.0"])
+    import pandas as pd
+
+def main():
     # Create an empty DataFrame with specified columns
     df = pd.DataFrame(columns=['patient', 'record', 'sig_len', 'time(s)', 'fs'])
 
     # Generate patient list (plist)
-    plist = [p for p in os.listdir('./physionet.org/files/mimic3wdb/1.0/') if p[0] == '3']
+    raw_path = './Data_0Raw/MIMIC3/physionet.org/files/mimic3wdb/1.0'
+    plist = [p for p in os.listdir(raw_path) if p[0] == '3']
 
     # Iterate through each patient folder
     for p in tqdm(plist, desc="Processing patients", unit="patient"):
         # Generate a list of patient folders
-        patlist = [pat for pat in os.listdir(f'./physionet.org/files/mimic3wdb/1.0/{p}/') if pat[0] == '3']
+        patlist = [pat for pat in os.listdir(f'{raw_path}/{p}/') if pat[0] == '3']
         
         for pat in tqdm(patlist, desc=f"Processing patient {p}", unit="folder", leave=False):
             # Generate a list of records
-            reclist = [rec[:-4] for rec in os.listdir(f'./physionet.org/files/mimic3wdb/1.0/{p}/{pat}/') if rec[-4:] == '.dat' and rec[7] == '_']
+            reclist = [rec[:-4] for rec in os.listdir(f'{raw_path}/{p}/{pat}/') if rec[-4:] == '.dat' and rec[7] == '_']
 
             abp = list()
             ppg = list()
@@ -47,7 +76,7 @@ if __name__ == "__main__":
             for rec in reclist:
                 try:
                     # Read the record data
-                    wfdata = wfdb.rdrecord(f'./physionet.org/files/mimic3wdb/1.0/{p}/{pat}/{rec}', channel_names=['ART', 'PLETH', 'II'])
+                    wfdata = wfdb.rdrecord(f'{raw_path}/{p}/{pat}/{rec}', channel_names=['ART', 'PLETH', 'II'])
 
                     # Check if wfdata is valid, contains 3 channels, and has a minimum signal length of 20 seconds
                     if wfdata is not None and len(wfdata.sig_name) == 3 and wfdata.sig_len >= wfdata.fs * 20:
@@ -82,11 +111,13 @@ if __name__ == "__main__":
                 }
 
                 # Ensure the 'raw_signals' directory exists
-                if not os.path.exists('raw_signals'):
-                    os.makedirs('raw_signals')
+                os.makedirs('./Data_0Raw/MIMIC3/raw_signals', exist_ok=True)
 
                 # Save the dictionary as a compressed .npz file
-                np.savez_compressed(f'raw_signals/{pat}.npz', **wfdb_dic)
+                np.savez_compressed(f'./Data_0Raw/MIMIC3/raw_signals/{pat}.npz', **wfdb_dic)
 
     # Save the DataFrame to a CSV file
-    df.to_csv('records_list.csv', index=False)
+    df.to_csv('records_list_partial.csv', index=False)
+
+if __name__ == "__main__":
+    main()

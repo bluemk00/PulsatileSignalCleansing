@@ -1,11 +1,9 @@
-import tensorflow as tf
-
 ''' 
-
 GP kernel functions 
-
+Source: https://github.com/ratschlab/GP-VAE
 '''
 
+import tensorflow as tf
 
 def rbf_kernel(T, length_scale):
     xs = tf.range(T, dtype=tf.float32)

@@ -1,6 +1,6 @@
 import os
 import sys
-sys.path.append("../../../lib/")
+sys.path.append("../../lib/")
 from artifact_augmentation import RMSE, AmplitudeCost
 import tensorflow as tf
 from tensorflow.keras.layers import Input, Dropout, Dense, Permute, Reshape, LayerNormalization, LSTM, Bidirectional, GaussianNoise
@@ -47,28 +47,27 @@ class ModelStructure:
         """
         if self.outptype == 0:
             if self.modeltype == 'DI':
-                SaveFolder = f'../../TrainedModels/ABPCleansing/{self.modeltype}_A/'
+                SaveFolder = f'./Model_TrainedWeights/ABPCleansing/{self.modeltype}_A/'
             else:
-                SaveFolder = f'../../TrainedModels/PPGCleansing/{self.modeltype}_A/'
+                SaveFolder = f'./Model_TrainedWeights/PPGCleansing/{self.modeltype}_A/'
             SaveFilePath = f'{self.modeltype}_A_{{epoch:04}}_val{{val_loss:.7f}}_valOut{{val_Output_loss:.7f}}_valDiff{{val_Diff_loss:.7f}}_loss{{loss:.7f}}_Out{{Output_loss:.7f}}_Diff{{Diff_loss:.7f}}.hdf5'
         elif self.outptype == 1:
             if self.modeltype == 'DI':
-                SaveFolder = f'../../TrainedModels/ABPCleansing/{self.modeltype}_D/'
+                SaveFolder = f'./Model_TrainedWeights/ABPCleansing/{self.modeltype}_D/'
             else:
-                SaveFolder = f'../../TrainedModels/PPGCleansing/{self.modeltype}_D/'
+                SaveFolder = f'./Model_TrainedWeights/PPGCleansing/{self.modeltype}_D/'
             SaveFilePath = f'{self.modeltype}_D_{{epoch:04}}_val{{val_loss:.7f}}_valOut{{val_Output_loss:.7f}}_valAmp{{val_Amp_loss:.7f}}_loss{{loss:.7f}}_Out{{Output_loss:.7f}}_Amp{{Amp_loss:.7f}}.hdf5'
         elif self.outptype == 2:
             if self.modeltype == 'DI':
-                SaveFolder = f'../../TrainedModels/ABPCleansing/{self.modeltype}/'
+                SaveFolder = f'./Model_TrainedWeights/ABPCleansing/{self.modeltype}/'
             else:
-                SaveFolder = f'../../TrainedModels/PPGCleansing/{self.modeltype}/'
+                SaveFolder = f'./Model_TrainedWeights/PPGCleansing/{self.modeltype}/'
             SaveFilePath = f'{self.modeltype}_{{epoch:04}}_val{{val_loss:.7f}}_valOut{{val_Output_loss:.7f}}_valDiff{{val_Diff_loss:.7f}}_valAmp{{val_Amp_loss:.7f}}_loss{{loss:.7f}}_Out{{Output_loss:.7f}}_Diff{{Diff_loss:.7f}}_Amp{{Amp_loss:.7f}}.hdf5'
         else:
             raise ValueError("Invalid outptype value. Must be 0, 1, or 2.")
 
         # Check if the SaveFolder exists, if not, create it
-        if not os.path.exists(SaveFolder):
-            os.makedirs(SaveFolder)
+        os.makedirs(SaveFolder, exist_ok=True)
         
         return SaveFolder, SaveFilePath
 

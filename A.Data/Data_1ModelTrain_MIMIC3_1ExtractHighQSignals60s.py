@@ -157,21 +157,17 @@ fs1 = 100  # New sampling rate
 time_len = 60  # Seconds
 intv = fs0 * time_len  # Segment length (sampling rate * seconds)
 ovlp = 0  # Overlapping length between segments
-source_dir = 'raw_signals/'
-output_dir = f'high_qual_{time_len}s/'
+source_dir = './Data_0Raw/MIMIC3/raw_signals/'
+output_dir = f'./Data_1ModelTrain/MIMIC3_High_Qual_{time_len}s/'
 ###########################################################################################
 
-if __name__ == "__main__":
+def main():
     # List all .npz files starting with '3' in the source directory
     rawdata_list = [filename for filename in os.listdir(source_dir) if filename.find('.npz') > 0 and filename.find('3') == 0]
     rawdata_list.sort()
 
-    # Create output directory if it doesn't exist
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-        print("Folder created.")
-    else:
-        print("Folder already exists.")
+    # Ensure the output_dir directory exists
+    os.makedirs(output_dir, exist_ok=True)
     
     # Process each file in the raw data list
     for p in tqdm(range(len(rawdata_list)), desc="Processing files", unit="file"):
@@ -253,3 +249,6 @@ if __name__ == "__main__":
         # Save the dictionary as a compressed .npz file if there are valid segments
         if len(wf_dic['sig_len']) != 0:
             np.savez_compressed(output_dir + rawdata_list[p], **wf_dic)
+
+if __name__ == "__main__":
+    main()

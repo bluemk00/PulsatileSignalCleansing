@@ -1,3 +1,11 @@
+'''
+This code is a modified version of the Supplementary Material for the paper 
+"Probabilistic Imputation for Time-series Classification with Missing Data",
+downloaded from the ICLR 2023 OpenReview. 
+It was originally submitted in 2022 and has been modified by K. Park.
+Unlike the original, this version is intended for imputation purposes.
+'''
+
 import numpy as np
 
 from collections import namedtuple
@@ -271,18 +279,13 @@ class GRUDCell(layers.Layer):
 
     
     def call(self, inputs, states, training=None):
-        # print('grudc-1',inputs)  # values:[None, feature_dim], mask:[None, feature_dim], times:[None,1]
-        # print('grudc-2',states)  # [None, n_hidden], [None, feature_dim], [None, feature_dim] 
         input_x, input_m, input_t = inputs
         h_tm1, x_keep_tm1, t_prev_tm1 = states
 
         delta_t = input_t - t_prev_tm1
-        # print('grudc-3',delta_t)  # [None, feature_dim]
 
         dp_mask = self.get_dropout_mask_for_cell(inputs, training, count=3)
-        # print('grudc-4',dp_mask)  # [None, feature_dim], [None, feature_dim], [None, 1]
         rec_dp_mask = self.get_recurrent_dropout_mask_for_cell(h_tm1, training, count=3)
-        # print('grudc-5',rec_dp_mask)  # [None, n_hidden], [None, n_hidden], [None, n_hidden]
 
         if self.feed_masking:
             if 0. < self.dropout < 1. and self._masking_dropout_mask is None:
@@ -291,51 +294,40 @@ class GRUDCell(layers.Layer):
                 )
 
             m_dp_mask = self._masking_dropout_mask
-            # print('m_dp_mask',m_dp_mask)  # None
         
         if self.input_decay is not None:
             gamma_di = delta_t * self.input_decay_kernel
             if self.use_decay_bias:
                 gamma_di = K.bias_add(gamma_di, self.input_decay_bias)
             gamma_di = self.input_decay(gamma_di)
-            # print('gamma_di',gamma_di)  # [None, feature_dim]
 
         if self.hidden_decay is not None:
             gamma_dh = K.dot(delta_t, self.hidden_decay_kernel)
             if self.use_decay_bias:
                 gamma_dh = K.bias_add(gamma_dh, self.hidden_decay_bias)
             gamma_dh = self.hidden_decay(gamma_dh)
-            # print('gamma_dh',gamma_dh)  # [None, n_hidden]
 
         if self.feed_masking and self.masking_decay is not None:
             gamma_dm = delta_t * self.masking_decay_kernel
             if self.use_decay_bias:
                 gamma_dm = K.bias_add(gamma_dm, self.masking_decay_bias)
             gamma_dm = self.masking_decay(gamma_dm)
-            # print('gamma_dm',gamma_dm)
 
         # weighted sum between decayed last observation and grown 0 (empirical mean)
-#         x_keep_t = tf.where(input_m, input_x, x_keep_tm1)
         x_keep_t = tf.where(input_m > 0.5, input_x, x_keep_tm1)
-        # print('grudc-6',x_keep_t)  # [None, feature_dim]
-#         x_t = tf.where(input_m, input_x, gamma_di * x_keep_t)
         x_t = tf.where(input_m > 0.5, input_x, gamma_di * x_keep_t)
-        # print('grudc-7',x_t)  # [None, feature_dim]
 
         if self.hidden_decay is not None:
             h_tm1d = gamma_dh * h_tm1
         else:
             h_tm1d = h_tm1
-        # print('grudc-8',h_tm1d)  # [None, n_hidden]
 
         if self.feed_masking:
             m_t = 1. - tf.cast(input_m, tf.float32)
             if self.masking_decay is not None:
                 m_t = gamma_dm * m_t
-            # print('m_t',m_t)  # [None, feature_dim]
 
         x_z, x_r, x_h = x_t, x_t, x_t
-        # print('pass1d')
 
         if 0. < self.dropout < 1.:
             x_z *= dp_mask[0]
@@ -349,7 +341,6 @@ class GRUDCell(layers.Layer):
                 m_z, m_r, m_h = m_t, m_t, m_t
 
         h_tm1_z, h_tm1_r = h_tm1d, h_tm1d
-        # print('pass2d')
 
         if 0. < self.recurrent_dropout < 1.:
             h_tm1_z *= rec_dp_mask[0]
@@ -361,7 +352,6 @@ class GRUDCell(layers.Layer):
 
         z_t = z_t + K.dot(h_tm1_z, self.recurrent_kernel[:, : self.units])
         r_t = r_t + K.dot(h_tm1_r, self.recurrent_kernel[:, self.units : self.units * 2])
-        # print('pass3d')
 
         if self.feed_masking:
             z_t += K.dot(m_z, self.masking_kernel[:, : self.units])
@@ -375,7 +365,6 @@ class GRUDCell(layers.Layer):
 
         z_t = self.recurrent_activation(z_t)
         r_t = self.recurrent_activation(r_t)
-        # print('pass4d')
 
         if 0. < self.recurrent_dropout < 1.:
             h_tm1_h = r_t * h_tm1d * rec_dp_mask[2]
@@ -383,15 +372,9 @@ class GRUDCell(layers.Layer):
             h_tm1_h = r_t * h_tm1d
 
         hh_t = self.activation(hh_t + K.dot(h_tm1_h, self.recurrent_kernel[:, self.units * 2 :]))
-        # print('pass5d')
         h_t = z_t * h_tm1 + (1 - z_t) * hh_t
-        # print('pass6d')
-#         t_prev_t = tf.where(input_m, K.tile(input_t, [1, self.state_size[-1]]), t_prev_tm1)
         t_prev_t = tf.where(input_m > 0.5, K.tile(input_t, [1, self.state_size[-1]]), t_prev_tm1)
-        # print('pass7d')
-        # print('grudc-9',h_t)  # [None, n_hidden]
-        # print('grudc-10',x_keep_t)  # [None, feature_dim]
-        # print('grudc-11',t_prev_t)  # [None, feature_dim]
+        
         return h_t, (h_t, x_keep_t, t_prev_t)
 
     def reset_masking_dropout_mask(self):
@@ -500,8 +483,6 @@ class GRUD(layers.RNN):
         self.activity_regularizer = regularizers.get(activity_regularizer)
 
     def call(self, inputs, mask=None, training=None, initial_state=None):
-        # print('grud-1',inputs)  # [None, time_len, feature_dim]
-        # print('grud-2',mask)  # None
         def reset_dropout_mask():
             self.cell.dropout_mask = None
             
@@ -514,7 +495,6 @@ class GRUD(layers.RNN):
         reset_dropout_mask()
         reset_recurrent_dropout_mask()
         reset_masking_dropout_mask()
-        # print('pass1')
         
         # The input should be dense, padded with zeros. If a ragged input is fed
         # into the layer, it is padded and the row lengths are used for masking.
@@ -532,19 +512,13 @@ class GRUD(layers.RNN):
             inputs, initial_state, None
         )
         
-        # print('pass2')
         if isinstance(mask, list):
             mask = mask[0]
-        # print('pass3')
         input_shape = K.int_shape(inputs[0])
-        # print('grud-3',input_shape)  # (None, time_len, feature_dim)
         timesteps = input_shape[0] if self.time_major else input_shape[1]
-        # print('grud-4',timesteps)  # time_len
 
         kwargs = {"training": training}
-        # print('pass4')
         self._maybe_reset_cell_dropout_mask(self.cell)
-        # print('pass5')
 
         def step(cell_inputs, cell_states):
             return self.cell(cell_inputs, cell_states, **kwargs)
@@ -560,15 +534,11 @@ class GRUD(layers.RNN):
             input_length=(row_lengths if row_lengths is not None else timesteps),
             time_major=self.time_major,
             zero_output_for_mask=self.zero_output_for_mask,
-#             return_all_outputs=self.return_sequences,
+            # return_all_outputs=self.return_sequences,
         )
-        # print('grud-5',last_output)  # (None, n_hidden)
-        # print('grud-6',outputs)  # (None, time_len, n_hidden)
-        # print('grud-7',states)  # (None,n_hidden), (None,feature_dim), (None,feature_dim)
         if self.stateful:
             updates = [self.states[0].assign(states[0])]
             self.add_update(updates)
-        # print('pass6')
         if self.return_sequences:
             if is_ragged_input:
                 output = tf.RaggedTensor.from_tensor(outputs, lengths=row_lengths)
@@ -576,7 +546,6 @@ class GRUD(layers.RNN):
                 output = outputs
         else:
             output = last_output
-        # print('grud-8',output)  # (None, time_len, n_hidden)
         if self.return_state:
             return [output] + list(states)
         else:

@@ -1,35 +1,44 @@
 import sys
 import os
+import argparse
+
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.layers import Input, Conv1D
 from tensorflow.keras import Model
 from tensorflow.keras.callbacks import ModelCheckpoint, CSVLogger
 
-# Set up environment variables for GPU usage
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-
-# Configure GPU memory usage
-config = tf.compat.v1.ConfigProto()
-config.gpu_options.allow_growth = True
-config.gpu_options.per_process_gpu_memory_fraction = 0.98
-tf.compat.v1.keras.backend.set_session(tf.compat.v1.Session(config=config))
-tf.compat.v1.enable_eager_execution()
-
 # Append custom library paths
-sys.path.append("../../Benchmarks/")
+sys.path.append("./Model_Utils/")
 from BDC_utils import *
 
-# Reference mean and standard deviation for normalization
-refer_mean = 80  # Mean of MIMIC III PPG clean data
-refer_std = 25   # Std of MIMIC III PPG clean data
 
-def main():
-    batch_size = 30
+if __name__ == "__main__":
+    # Argument parser for command line options
+    parser = argparse.ArgumentParser(description='Train a model with specified parameters.')
+    parser.add_argument('--signal_type', '-s', type=str, required=True, choices=['ABP', 'PPG'], help="Signal type (ABP or PPG)")
+    parser.add_argument('--batch_size', '-b', type=int, default=30, help="Batch size (default: 30)")
+    parser.add_argument('--epochs', '-e', type=int, default=10000, help="Number of epochs (default: 10000)")
+    parser.add_argument('--gpu', '-g', type=str, default="0", help="GPU device id (default: 0)")
+
+    args = parser.parse_args()
+
+    # Set up GPU environment
+    os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+    os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
+
+    config = tf.compat.v1.ConfigProto()
+    config.gpu_options.allow_growth = True
+    config.gpu_options.per_process_gpu_memory_fraction = 0.98
+    tf.compat.v1.keras.backend.set_session(tf.compat.v1.Session(config=config))     
+    tf.compat.v1.enable_eager_execution()
+
+    signal_type = args.signal_type
+    batch_size = args.batch_size
+    epochs = args.epochs
 
     # Output directory for models
-    outdir = '../../TrainedModels/ABPCleansing/BDC/'
+    outdir = f'./Model_TrainedWeights/{signal_type}Cleansing/BDC/'
     os.makedirs(outdir, exist_ok=True)
     checkpoint_prefix = os.path.join(outdir, "ckpt")
 
@@ -37,15 +46,33 @@ def main():
     # Loading Data #
     ################
 
-    # Load training and validation datasets
-    TrSet = np.load('../../TrainDataSet/MIMIC_ABP/MIMIC_ART_TrSet.npy')
-    ValSet = np.load('../../TrainDataSet/MIMIC_ABP/MIMIC_ART_ValSet.npy')
+    # Load and normalize data based on model type
+    if signal_type == 'ABP':
+        TrSet = np.load('../A.Data/Data_1ModelTrain/MIMIC3_ABP/MIMIC_ART_TrSet.npy')
+        ValSet = np.load('../A.Data/Data_1ModelTrain/MIMIC3_ABP/MIMIC_ART_ValSet.npy')
+        refer_mean, refer_std = 80, 25 # mean, std of MIMIC III ABP clean data
+        refer_min, refer_max = 20.0, 220.0
+    elif signal_type == 'PPG':
+        TrSet = np.load('../A.Data/Data_1ModelTrain/MIMIC3_PPG/MIMIC_PPG_TrSet.npy')
+        ValSet = np.load('../A.Data/Data_1ModelTrain/MIMIC3_PPG/MIMIC_PPG_ValSet.npy')
+        refer_mean, refer_std = 0.448, 0.146 # mean, std of MIMIC III PPG clean data
+        refer_min, refer_max = 0.0, 1.0
+    else:
+        raise ValueError("Invalid signal type. Must be 'ABP' or 'PPG'.")
+
+    print('\n    *********************************************************************************\n')
+    print(f'        Train set total {TrSet.shape[0]} size')
+    print(f'        Valid set total {ValSet.shape[0]} size\n')
+
+    # Print the SaveFolder location
+    print(f'        Model weights will be saved to: {outdir}\n')
+
+    print('    *********************************************************************************\n')
 
     #######################
     # Generating Missings #
     #######################
 
-    # Create data frames and shuffle them
     TrDataFrame = tf.signal.frame(TrSet.astype('float32'), 1, 1).numpy()
     ValDataFrame = tf.signal.frame(ValSet.astype('float32'), 1, 1).numpy()
     np.random.shuffle(TrDataFrame)
@@ -65,20 +92,26 @@ def main():
     Tr_X = TrDataFrame.copy()
     random_values = np.random.normal(loc=refer_mean, scale=refer_std, size=TrDataFrame.shape)
     Tr_X[TrMask == 0] = random_values[TrMask == 0]
-    Tr_X = (Tr_X - 20.0) / (220.0 - 20.0)
+    if signal_type == 'ABP':
+        Tr_X = (Tr_X - refer_min) / (refer_max - refer_min)
     Tr_X = np.clip(Tr_X, 0.0, 1.0)
 
-    Tr_Y = (TrDataFrame - 20.0) / (220.0 - 20.0)
+    Tr_Y = TrDataFrame.copy()
+    if signal_type == 'ABP':
+        Tr_Y = (Tr_Y - refer_min) / (refer_max - refer_min)
     Tr_Y = np.clip(Tr_Y, 0.0, 1.0)
 
     # Normalize validation data and introduce missing values
     Val_X = ValDataFrame.copy()
     random_values = np.random.normal(loc=refer_mean, scale=refer_std, size=ValDataFrame.shape)
     Val_X[ValMask == 0] = random_values[ValMask == 0]
-    Val_X = (Val_X - 20.0) / (220.0 - 20.0)
+    if signal_type == 'ABP':
+        Val_X = (Val_X - refer_min) / (refer_max - refer_min)
     Val_X = np.clip(Val_X, 0.0, 1.0)
 
-    Val_Y = (ValDataFrame - 20.0) / (220.0 - 20.0)
+    Val_Y = ValDataFrame.copy()
+    if signal_type == 'ABP':
+        Val_Y = (Val_Y - refer_min) / (refer_max - refer_min)
     Val_Y = np.clip(Val_Y, 0.0, 1.0)
 
     # Clean up to save memory
@@ -120,7 +153,5 @@ def main():
     ############
 
     # Train the model
-    BDCModel.fit([Tr_X, TrMask], Tr_Y, validation_data=([Val_X, ValMask], Val_Y), batch_size=batch_size, verbose=1, shuffle=True, epochs=10000, callbacks=[model_checkpoint_callback, csv_logger])
+    BDCModel.fit([Tr_X, TrMask], Tr_Y, validation_data=([Val_X, ValMask], Val_Y), batch_size=batch_size, verbose=1, shuffle=True, epochs=epochs, callbacks=[model_checkpoint_callback, csv_logger])
 
-if __name__ == "__main__":
-    main()

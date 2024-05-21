@@ -1,3 +1,8 @@
+'''
+This is a modified version from the source: https://github.com/rehg-lab/pulseimpute
+Modifications made by J. Kim
+'''
+
 import tensorflow as tf
 import numpy as np
 from tensorflow.keras.layers import Input, Conv1D, BatchNormalization, Activation

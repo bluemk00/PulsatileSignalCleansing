@@ -1,9 +1,10 @@
+'''
+TF utils
+Source: https://github.com/ratschlab/GP-VAE
+'''
+
 import tensorflow as tf
 import numpy as np
-
-
-''' TF utils '''
-
 
 def reduce_logmeanexp(x, axis, eps=1e-5):
     """Numerically-stable (?) implementation of log-mean-exp.

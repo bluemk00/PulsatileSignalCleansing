@@ -1,13 +1,14 @@
 """
-
-TensorFlow models for use in this project.
+This is a modified version from the source: https://github.com/ratschlab/GP-VAE
+Modifications made by J. Kim
+TensorFlow models for use in this project
 variational version: Decoder dnn -> gru
 nll -> mse
 """
 
-from utils import *
-from nn_utils_varia import *
-from gp_kernel import *
+from GPVAE_utils import *
+from GPVAE_nn_utils_varia import *
+from GPVAE_gp_kernel import *
 from tensorflow_probability import distributions as tfd
 import tensorflow as tf
 

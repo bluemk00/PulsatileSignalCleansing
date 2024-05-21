@@ -1,3 +1,11 @@
+'''
+This code is a modified version of the Supplementary Material for the paper 
+"Probabilistic Imputation for Time-series Classification with Missing Data",
+downloaded from the ICLR 2023 OpenReview. 
+It was originally submitted in 2022 and has been modified by K. Park.
+Unlike the original, this version is intended for imputation purposes.
+'''
+
 import numpy as np
 
 from collections import namedtuple
@@ -31,42 +39,22 @@ def compute_last_observed_and_mean(x, mask):
     - mean: A tensor representing the mean value for each feature over time.
     """
 
-    # x shape: [batch_size, time_len, feature_dim]
-    # mask shape: [batch_size, time_len, feature_dim]
-    # print('clom-1',x)
-    # print('clom-2',mask)
-
     # Initialize last_observed tensor with zeros
     last_observed = tf.zeros_like(x)
-    # last_observed shape: [batch_size, time_len, feature_dim]
-    # print('clom-3',last_observed)
 
     # Initialize last_values tensor with zeros
     dynamic_shape = tf.shape(x)
     last_values = tf.zeros([dynamic_shape[0], OrigDim])
 
-    # last_values shape: [batch_size, feature_dim]
-    # print('clom-4',last_values)
-
     # Iteratively compute the last observed values
     for t in range(x.shape[1]):
         last_values = mask[:, t] * x[:, t] + (1 - mask[:, t]) * last_values
         last_observed = replace_column(last_observed, last_values, t)
-    # last_observed shape: [batch_size, time_len, feature_dim]
-    # print('clom-5',last_observed)
 
     # Compute mean across the time axis and account for the mask
     mean = tf.math.reduce_sum(x, axis=1) / tf.math.reduce_sum(mask, axis=1)
-    # print('clom-6',mean)
-    # mean shape: [batch_size, feature_dim]
-
     mean = tf.expand_dims(mean, axis=1)
-    # mean shape: [batch_size, 1, feature_dim]
-    # print('clom-7',mean)
-
     mean = tf.tile(mean, [1, x.shape[1], 1])
-    # mean shape: [batch_size, time_len, feature_dim]
-    # print('clom-8',mean)
 
     return last_observed, mean
 
@@ -80,41 +68,24 @@ def compute_delta_t(s):
     Returns:
     A tensor of shape [batch_size, time_len, feature_dim] containing time differences between consecutive missing values.
     """
-    # s shape: [batch_size, time_len, feature_dim]
 
     # Find positions of missing values
     missing_positions = tf.where(s == 0)
-    # missing_positions shape: [num_missing, 3] where num_missing is the number of zeros in s
 
     # Compute cumulative sum of s and use difference to get distances
     cumsum_s = tf.cumsum(s, axis=1)
-    # cumsum_s shape: [batch_size, time_len, feature_dim]
-
     zeros_tensor = tf.zeros((tf.shape(s)[0], 1, tf.shape(s)[2]), dtype=s.dtype)
-    # zeros_tensor shape: [batch_size, 1, feature_dim]
-
     distances = tf.concat([zeros_tensor, cumsum_s[:, :-1]], axis=1)
-    # distances shape after concat: [batch_size, time_len, feature_dim]
-
     distances = cumsum_s - distances
-    # distances shape: [batch_size, time_len, feature_dim]
 
     # Create a delta_t tensor initialized with distances for missing values
     delta_t = tf.where(s == 0, distances, 0)
-    # delta_t shape: [batch_size, time_len, feature_dim]
 
     # For initial missing values, fill with their index + 1
     initial_missing = tf.math.cumprod(s, axis=1) == 0
-    # initial_missing shape: [batch_size, time_len, feature_dim]
-
     arange_tensor = tf.reshape(tf.range(1, tf.shape(s)[1] + 1, dtype=s.dtype), (1, -1, 1))
-    # arange_tensor shape after reshape: [1, time_len, 1]
-
     arange_tensor = tf.broadcast_to(arange_tensor, tf.shape(s))
-    # arange_tensor shape after broadcast: [batch_size, time_len, feature_dim]
-
     delta_t = tf.where(initial_missing, arange_tensor, delta_t)
-    # delta_t shape: [batch_size, time_len, feature_dim]
     
     return delta_t
 
@@ -177,32 +148,20 @@ class DecayCell(layers.AbstractRNNCell):
         self.built = True
 
     def call(self, inputs, states, training=None):
-        # print('dc-1',inputs)  # [None, feature_dim], [None, feature_dim], [None, 1]
-        # print('dc-2',states)  # [None, feature_dim], [None, feature_dim]
         x_input, m_input, t_input = inputs
         x_last, t_last = states
         t_delta = t_input - t_last
-        # print('dc-3',t_delta)  # [None, feature_dim]
 
         gamma_di = t_delta * self.decay_kernel
-        # print('dc-4',gamma_di)  # [None, feature_dim]
         if self.use_bias:
             gamma_di = K.bias_add(gamma_di, self.decay_bias)
         gamma_di = self.decay(gamma_di)
-        # print('dc-5',gamma_di)  # [None, feature_dim]
 
         m_input = tf.cast(m_input, tf.bool)
-        # print('m',m_input)
-        # print('x',x_input)
-        # print('g',gamma_di)
-        # print('x_l',x_last)
         x_t    = tf.where(m_input, x_input, gamma_di * x_last + (1 - gamma_di) * x_input)
-        # print('dc-6',x_t)  # [None, feature_dim]
-        # x_t    = tf.where(m_input, x_input, gamma_di * x_last)
         x_keep = tf.where(m_input, x_input, x_last)
-        # print('dc-7',x_keep)  # [None, feature_dim]
         t_keep = tf.where(m_input, t_input, t_last)
-        # print('dc-8',t_keep)  # [None, feature_dim]
+
         return x_t, InterpolateState(x_keep, t_keep)
 
     @property
