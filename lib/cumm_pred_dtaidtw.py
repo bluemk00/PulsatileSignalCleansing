@@ -1,7 +1,23 @@
-import numpy as np
+import sys
 import time
-from dtaidistance import dtw
+import numpy as np
 import tensorflow as tf
+
+# Ensure tqdm is installed
+try:
+    from tqdm import tqdm
+except ImportError:
+    print("tqdm is not installed. Installing now...")
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "tqdm"])
+    from tqdm import tqdm
+
+# Ensure dtaidistance is installed
+try:
+    from dtaidistance import dtw
+except ImportError:
+    print("dtaidistance is not installed. Installing now...")
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "dtaidistance"])
+    from dtaidistance import dtw
 
 def calc_shortest_dtw_optimized_dtaidistance(initial_clean, prediction, sliding=50, max_dist=np.inf):
     """
@@ -88,8 +104,9 @@ def cummulative_prediction(AEModel, Model_name, noise, org_batch, missing_mask=N
     pred_nb = (abp_input.shape[1] - 3000) // pred_step + 1
 
     start_time = time.time()
-
-    for n in range(batch_nb):
+    
+    batch_progress = tqdm(range(batch_nb), desc="Batch processing")
+    for n in batch_progress:
         batch = org_batch
         if n == batch_nb - 1:
             if last_n == 0:
@@ -140,8 +157,6 @@ def cummulative_prediction(AEModel, Model_name, noise, org_batch, missing_mask=N
                 min_dtw_pred = np.array([calc_shortest_dtw_optimized_dtaidistance(initial_clean[ID], Pred[ID], sliding=sliding, max_dist=max_dist) for ID in range(batch)])
                 min_dtw_raw = np.array([calc_shortest_dtw_optimized_dtaidistance(initial_clean[ID], Raw[ID], sliding=sliding, max_dist=max_dist) for ID in range(batch)])
 
-                print(f'Time required for DTW calculation ({i + 1}/{pred_nb}): {time.time() - dtw_time0:.5f} sec')
-                
                 Mask = min_dtw_pred < min_dtw_raw
                 if sqi_return:
                     min_dtw = np.where(min_dtw_pred < min_dtw_raw, min_dtw_pred, min_dtw_raw)
@@ -206,8 +221,6 @@ def cummulative_prediction(AEModel, Model_name, noise, org_batch, missing_mask=N
                 if Model_name in ['HIVAE','GPVAE','SNM','BDC']:
                     m = np.concatenate((m[:, pred_step:], new_mask), axis=1)
 
-        print(f'Time required for batch: {time.time() - batch_time0:.5f} sec')
-
         if n == 0:
             cumm_output = cumm_output_per_batch.copy()
             if dtw and sqi_return:
@@ -216,10 +229,8 @@ def cummulative_prediction(AEModel, Model_name, noise, org_batch, missing_mask=N
             cumm_output = np.concatenate((cumm_output, cumm_output_per_batch), axis=0)
             if dtw and sqi_return:
                 cumm_sqi = np.concatenate((cumm_sqi, cumm_sqi_per_batch), axis=0)
-        print(f'Processing {cumm_output.shape[0]} / {abp_input.shape[0]}')
 
-    print(f'{cumm_output.shape[0]} / {abp_input.shape[0]} -- prediction complete')
-    print(f'Time required for prediction: {time.time() - start_time:.5f} sec')
+    print(f'Prediction complete. Time required for prediction: {time.time() - start_time:.5f} sec')
 
     if dtw and sqi_return:
         return cumm_output, cumm_sqi
