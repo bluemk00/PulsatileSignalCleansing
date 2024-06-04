@@ -1,28 +1,19 @@
-# General Configuration
-sec: '90s'
+datasets: ['VitalDB', 'MIMIC3']
+times: ['30s', '60s']
 data_types: ['HighQual', 'LowQual']
 model_names: ['Baseline', 'DI', 'DI_D', 'DI_A', 'HIVAE', 'GPVAE', 'SNM', 'BDC']
-datasets: ['VitalDB', 'MIMIC3']
 
 # Model Configuration
 model:
-  path: './BestModels/90s_IOH.hdf5'
-  input_layer_name: 'Input'
-  output_layer_name: 'BinOut'
-  input_shape: 9000
-  batch_size: 1000
-  verbose: 1
+  path:
+    '30s': './BestModels/30s_IOH.hdf5'
+    '60s': './BestModels/60s_IOH.hdf5'
 
 # Paths
 data_path: './ProcessedData/Evaluation'
 hypo_input_path_template: '{data_path}/{sec}_IOH/{dataset}/{model_name}_{data_type}_Hypo.npy'
 nonhypo_input_path_template: '{data_path}/{sec}_IOH/{dataset}/{model_name}_{data_type}_NonHypo.npy'
 result_path: './Results'
-
-# Evaluation Configuration
-evaluation:
-  positive_label: 1
-  threshold: 0.5
 
 # Output
 output_filename_template: '{dataset}_{sec}_IOH_AUROC_results.csv'

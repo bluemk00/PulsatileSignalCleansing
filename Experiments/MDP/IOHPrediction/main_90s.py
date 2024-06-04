@@ -49,9 +49,9 @@ def evaluate(abp_output, pred):
     confusion_matrix = metrics.confusion_matrix(abp_output, np.where(np.reshape(pred, -1) > config['evaluation']['threshold'], 1, 0))
     return auc, confusion_matrix
 
-results = []
 
 for dataset in datasets:
+    results = []
     for data_type in data_types:
         for model_name in model_names:
             hypo_input_path = config['hypo_input_path_template'].format(
@@ -72,11 +72,11 @@ for dataset in datasets:
             
             results.append([dataset, sec, data_type, model_name, AUROC])
             
-output_path = config['result_path']
-os.makedirs(output_path, exist_ok=True)
+    output_path = config['result_path']
+    os.makedirs(output_path, exist_ok=True)
 
-output_file = config['output_filename_template'].format(sec=sec)
-with open(os.path.join(output_path, output_file), 'w', newline='') as file:
-    writer = csv.writer(file)
-    writer.writerow(['Dataset', 'Input Length', 'Data Quality', 'Model', 'AUROC'])
-    writer.writerows(results)
+    output_file = config['output_filename_template'].format(dataset=dataset, sec=sec)
+    with open(os.path.join(output_path, output_file), 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Dataset', 'Input Length', 'Data Quality', 'Model', 'AUROC'])
+        writer.writerows(results)
