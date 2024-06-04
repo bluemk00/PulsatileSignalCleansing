@@ -1,7 +1,7 @@
 gpu:
   cuda_device_order: PCI_BUS_ID
   cuda_visible_devices: '0'
-  per_process_gpu_memory_fraction: 1.0
+  per_process_gpu_memory_fraction: 0.98
 
 model:
   dropout: 0.2 
@@ -15,9 +15,15 @@ train:
   shuffle: true
 
 paths:
-  train_x: '../../../A.Data/A2.Processed/PPG/DownstreamTask/MIMIC_PPG_TrSet.npy'
-  train_y: '../../../A.Data/A2.Processed/PPG/DownstreamTask/MIMIC_ABP_TrSet.npy'
-  test_x: '../../../A.Data/A2.Processed/PPG/DownstreamTask/MIMIC_PPG_ValSet1.npy'
-  test_y: '../../../A.Data/A2.Processed/PPG/DownstreamTask/MIMIC_ABP_ValSet1.npy'
-  checkpoint: './results/4080_pytest/epoch_{epoch:03d}_loss_{loss:0.5f}_mse_{mse:0.5f}_mae_{mae:0.5f}_valloss_{val_loss:0.5f}_valmse_{val_mse:0.5f}_valmae_{val_mae:0.5f}.hdf5'
-  log: './log/4080_pytest/test_log.csv'
+  train_x: './ProcessedData/Train/MIMIC_PPG_TrSet.npy'
+  train_y: './ProcessedData/Train/MIMIC_ABP_TrSet.npy'
+  test_x: './ProcessedData/Train/MIMIC_PPG_ValSet1.npy'
+  test_y: './ProcessedData/Train/MIMIC_ABP_ValSet1.npy'
+  checkpoint: './ModelResults/epoch_{epoch:03d}_loss_{loss:0.5f}_mse_{mse:0.5f}_mae_{mae:0.5f}_valloss_{val_loss:0.5f}_valmse_{val_mse:0.5f}_valmae_{val_mae:0.5f}.hdf5'
+  log: './ModelResults/test_log.csv'
+
+eval:
+  paths:
+    data: './ProcessedData/Evaluation/'
+    model: './BestModel/PPGtoABP.hdf5'
+    results: './Results/'

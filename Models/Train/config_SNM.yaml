@@ -1,0 +1,19 @@
+gpu:
+  cuda_device_order: PCI_BUS_ID
+  cuda_visible_devices: '0'
+  per_process_gpu_memory_fraction: 0.98
+
+hyperparameters:
+  batchsize: 1500
+  epochs: 10000
+
+model:
+  signal_type: 'ABP'  # 'ABP' or 'PPG'
+
+mimic3:
+  paths:
+    train: '../ProcessedData/MIMIC3_ABP/MIMIC_ART_TrSet.npy'
+    valid: '../ProcessedData/MIMIC3_ABP/MIMIC_ART_ValSet.npy'
+
+output:
+  directory: './ModelResults/ABPCleansing/SNM/'

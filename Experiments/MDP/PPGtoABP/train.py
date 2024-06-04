@@ -1,9 +1,18 @@
+import sys
 import os
-import yaml
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras import callbacks
 from model import SelfAttentionuNet_1D, custom_loss
+
+# Ensure yaml is installed
+try:
+    import yaml
+except ImportError:
+    print("yaml is not installed. Installing now...")
+    import subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "pyyaml"])
+    import yaml
 
 def load_data(config):
     Train_X = np.load(config['paths']['train_x'])

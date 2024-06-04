@@ -3,3 +3,4 @@
 *.npz
 *pycache*
 .ipynb_checkpoints
+*secret*

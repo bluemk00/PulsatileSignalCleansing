@@ -1,0 +1,76 @@
+gpu:
+  cuda_device_order: PCI_BUS_ID
+  cuda_visible_devices: '0'
+  per_process_gpu_memory_fraction: 0.98
+
+hyperparameters:
+  batchsize: 1500
+  epochs: 10000
+
+model:
+  modeltype: 'DI'  ## DI
+  outptype: 2
+  gaussian_noise: 0.0
+  dropout_rate: 0.0
+  mimic3:
+    paths:
+      train: '../ProcessedData/MIMIC3_ABP/MIMIC_ART_TrSet.npy'
+      valid: '../ProcessedData/MIMIC3_ABP/MIMIC_ART_ValSet.npy'
+  refer_min: 20.0
+  refer_max: 220.0
+
+  # modeltype: 'DI'  ## DI-D
+  # outptype: 1
+  # gaussian_noise: 0.0
+  # dropout_rate: 0.0
+  # mimic3:
+  #   paths:
+  #     train: '../ProcessedData/MIMIC3_ABP/MIMIC_ART_TrSet.npy'
+  #     valid: '../ProcessedData/MIMIC3_ABP/MIMIC_ART_ValSet.npy'
+  # refer_min: 20.0
+  # refer_max: 220.0
+  
+  # modeltype: 'DI'  ## DI-A
+  # outptype: 0
+  # gaussian_noise: 0.0
+  # dropout_rate: 0.0
+  # mimic3:
+  #   paths:
+  #     train: '../ProcessedData/MIMIC3_ABP/MIMIC_ART_TrSet.npy'
+  #     valid: '../ProcessedData/MIMIC3_ABP/MIMIC_ART_ValSet.npy'
+  # refer_min: 20.0
+  # refer_max: 220.0
+  
+  # modeltype: 'DA'  ## DA
+  # outptype: 2
+  # gaussian_noise: 0.05
+  # dropout_rate: 0.1
+  # mimic3:
+  #   paths:
+  #     train: '../ProcessedData/MIMIC3_PPG/MIMIC_PPG_TrSet.npy'
+  #     valid: '../ProcessedData/MIMIC3_PPG/MIMIC_PPG_ValSet.npy'
+  # refer_min: 0.0
+  # refer_max: 1.0
+  
+  # modeltype: 'DA'  ## DA-D
+  # outptype: 1
+  # gaussian_noise: 0.05
+  # dropout_rate: 0.1
+  # mimic3:
+  #   paths:
+  #     train: '../ProcessedData/MIMIC3_PPG/MIMIC_PPG_TrSet.npy'
+  #     valid: '../ProcessedData/MIMIC3_PPG/MIMIC_PPG_ValSet.npy'
+  # refer_min: 0.0
+  # refer_max: 1.0
+  
+  # modeltype: 'DA'  ## DA-A
+  # outptype: 0
+  # gaussian_noise: 0.05
+  # dropout_rate: 0.1
+  # mimic3:
+  #   paths:
+  #     train: '../ProcessedData/MIMIC3_PPG/MIMIC_PPG_TrSet.npy'
+  #     valid: '../ProcessedData/MIMIC3_PPG/MIMIC_PPG_ValSet.npy'
+  # refer_min: 0.0
+  # refer_max: 1.0
+  
