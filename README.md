@@ -15,10 +15,7 @@ This repository contains the Python code for **Salient Facets in Artificial Inte
 
 ## Code Overview and Execution Guide
 
-This repository includes instructions for running two of the metric-based evaluations among the three experimental assessments in our research. You can download the entire folder, including the processed data, via the link below.
-
-[Download the full folder here]
-
+This repository includes instructions for running two of the metric-based evaluations among the three experimental assessments in our research.
 
 
 ### Model-based Cleansing Performance (MCP)
