@@ -1,33 +1,27 @@
 # Pulsatile Signal Cleansing
 
 
+## Overview
 
-## ABP Signal Artifact Simulator
-
-
-### Overview
-
-This repository contains the beta version of the ABP Signal Artifact Simulator. The simulator is designed to generate artifacts in ABP (Arterial Blood Pressure) signals for research and testing purposes.
+This repository contains the Phthon code for `Salient Facets in Artificial Intelligence for Cleansing Pulsatile Physiological Signals: Knowledge Incorporation, Real-Time Dynamics, Assessment Entities, and Technology Acceptance`. Our research focuses on the experimental validation of four aspects for the clinical application of cleansing pulsatile physiological signals.
 
 
+## Library Dependencies
 
-### Current Research
-
-Research based on the official version of this simulator is currently ongoing. 
-
-
-
-### Usage
-
-Please note that this beta version is primarily for developmental use and may contain bugs or incomplete features. Users are advised to proceed with caution and are encouraged to contact the authors for more information or to discuss potential collaborations.
-The file containing the necessary functions for simulating ABP signal artifacts, named [artifact_generator.py](lib/artifact_generator.py), is located in the [lib](lib) folder of the repository. This Python script includes all the core functionalities required for generating artifacts in Arterial Blood Pressure (ABP) signals for research and testing purposes.
+- Python == 3.8
+- numpy == 1.19
+- tensorflow == 2.4
 
 
-**Unauthorized Use Prohibited**: Unauthorized use, duplication, or distribution of this software and its associated documentation is strictly prohibited without prior written permission from the author(s). Please contact the author(s) to obtain permission before using this software in any manner not explicitly authorized.
+## Code Overview and Run Procedure Guide
+
+### For Training Cleansing Models
+
+### Evaluations
 
 
 
-### Contact Information
+## Contact Information
 
 If you plan to use this simulator for your research or if you need specific details about the implementation, please contact the author(s) before proceeding. This will ensure you have the most up-to-date information and guidance. Contact details can be found below:
 
@@ -39,6 +33,6 @@ If you plan to use this simulator for your research or if you need specific deta
 
 
 
-### Acknowledgements
+## Acknowledgements
 
 We appreciate the contributions and feedback from all users and collaborators who are helping to improve this simulator.
