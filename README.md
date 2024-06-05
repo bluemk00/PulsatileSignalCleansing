@@ -17,7 +17,7 @@ This repository contains the Python code for **Salient Facets in Artificial Inte
 
 This repository includes instructions for running two of the metric-based evaluations among the three experimental assessments in our research. You can download the entire folder, including the processed data, via the link below.
 
-[Download the full folder here](https://www.dropbox.com/scl/fo/qaxzwvorja4o2rg3pvwtl/ACwjkOewz0Ln1AYXOIka1H0?rlkey=56rkqm8fqd7mtlodvrh1k4kdn&dl=0)
+[Download the full folder here](https://www.dropbox.com/scl/fo/qaxzwvorja4o2rg3pvwtl/ACwjkOewz0Ln1AYXOIka1H0?rlkey=56rkqm8fqd7mtlodvrh1k4kdn&dl=1)
 
 
 
