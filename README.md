@@ -66,4 +66,4 @@ python evaluation.py
 
 ## Acknowledgements
 
-We appreciate the contributions and feedback from all users and collaborators who are helping to improve this simulator.
+We appreciate the contributions and feedback from all users and collaborators who are helping to improve our research.
