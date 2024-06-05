@@ -1,0 +1,33 @@
+# Train Configuration
+
+sec: '30s'    #['30s','60s']
+
+gpu:
+  cuda_device_order: PCI_BUS_ID
+  cuda_visible_devices: '0'
+  per_process_gpu_memory_fraction: 0.98
+
+hyperparameters:
+  batch_size: 1000
+  epochs: 500
+  drop_rate: 0.3
+  gauss_std: 0.03
+  learning_rate: 0.00001
+  conv_params:
+  - [64, 128]
+  - [32, 64]
+  - [16, 32]
+  - [8, 8]
+
+data:
+  db: 'Vitaldb'
+  vitaldb:
+    paths:
+      data_path: './ProcessedData/Train/'
+      x_file: 'Train_Data_X.npy'
+      y_file: 'Train_Data_Y.npy'
+
+model:
+  log_path: './ModelResults/test_log/'
+  checkpoint_dir: './ModelResults/{sec}_IOH/'
+  checkpoint_prefix: 'IOHmodel'
