@@ -30,7 +30,7 @@ python evaluation.py
 
 ### Model-based Downstream task Performance (MDP)
 
-In the [Experiments/MDP](https://github.com/bluemk00/PulsatileSignalCleansing/tree/main/Experiments/MDP) directory, 실제 아티팩트에 대한 정제 연쇄 효과가 두 종류의 다운스트림 태스크에 의해 평가된다: **IOH Prediction Performance**와 **PPG to ABP Transfer Performance**.
+In the [Experiments/MDP](https://github.com/bluemk00/PulsatileSignalCleansing/tree/main/Experiments/MDP) directory, the cascading effect of cleansing on real artifacts is evaluated by two types of downstream tasks: **IOH Prediction Performance** and **PPG to ABP Transfer Performance**.
 
 
 #### IOH Prediction Performance
