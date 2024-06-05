@@ -3,7 +3,7 @@
 
 ## Overview
 
-This repository contains the Python code for `Salient Facets in Artificial Intelligence for Cleansing Pulsatile Physiological Signals: Knowledge Incorporation, Real-Time Dynamics, Assessment Entities, and Technology Acceptance`. Our research focuses on the experimental validation of four aspects for the clinical application of cleansing pulsatile physiological signals.
+This repository contains the Python code for **Salient Facets in Artificial Intelligence for Cleansing Pulsatile Physiological Signals: Knowledge Incorporation, Real-Time Dynamics, Assessment Entities, and Technology Acceptance**. Our research focuses on the experimental validation of four aspects for the clinical application of cleansing pulsatile physiological signals.
 
 
 ## Library Dependencies
@@ -13,11 +13,45 @@ This repository contains the Python code for `Salient Facets in Artificial Intel
 - tensorflow == 2.4
 
 
-## Code Overview and Run Procedure Guide
+## Code Overview and Execution Guide
 
-### For Training Cleansing Models
+This repository includes instructions for running two of the metric-based evaluations among the three experimental assessments in our research.
 
-### Evaluations
+
+### Model-based Cleansing Performance (MCP)
+
+In the [Experiments/MCP](https://github.com/bluemk00/PulsatileSignalCleansing/tree/main/Experiments/MCP) directory, the cleansing performance on augmented artifacts is evaluated according to different models. Navigate to this folder and run [evaluation.py](https://github.com/bluemk00/PulsatileSignalCleansing/tree/main/Experiments/MCP/evaluation.py) as shown below. You will see that CSV files are generated in the [Experiments/MCP/Results](https://github.com/bluemk00/PulsatileSignalCleansing/tree/main/Experiments/MCP/Results) folder.
+
+```bash
+cd Experiments/MCP
+python evaluation.py
+```
+
+
+### Model-based Downstream task Performance (MDP)
+
+In the [Experiments/MDP](https://github.com/bluemk00/PulsatileSignalCleansing/tree/main/Experiments/MDP) directory, 실제 아티팩트에 대한 정제 연쇄 효과가 두 종류의 다운스트림 태스크에 의해 평가된다: **IOH Prediction Performance**와 **PPG to ABP Transfer Performance**.
+
+
+#### IOH Prediction Performance
+
+Navigate to the [Experiments/MDP/IOHPrediction](https://github.com/bluemk00/PulsatileSignalCleansing/tree/main/Experiments/MDP/IOHPrediction) directory and run [evaluation_30s60s.py](https://github.com/bluemk00/PulsatileSignalCleansing/tree/main/Experiments/MDP/IOHPrediction/evaluation_30s60s.py) and [evaluation_90s.py](https://github.com/bluemk00/PulsatileSignalCleansing/tree/main/Experiments/MDP/IOHPrediction/evaluation_90s.py) as shown below. You will see that CSV files are generated in the [Experiments/MDP/IOHPrediction/Results](https://github.com/bluemk00/PulsatileSignalCleansing/tree/main/Experiments/MDP/IOHPrediction/Results) folder.
+
+```bash
+cd Experiments/MDP/IOHPrediction
+python evaluation_30s60s.py
+python evaluation_90s.py
+```
+
+
+#### PPG to ABP Transfer Performance
+
+Navigate to the [Experiments/MDP/PPGtoABP](https://github.com/bluemk00/PulsatileSignalCleansing/tree/main/Experiments/MDP/PPGtoABP) directory and run [evaluation.py](https://github.com/bluemk00/PulsatileSignalCleansing/tree/main/Experiments/MDP/PPGtoABP/evaluation.py) as shown below. You will see that CSV file is generated in the [Experiments/MDP/PPGtoABP/Results](https://github.com/bluemk00/PulsatileSignalCleansing/tree/main/Experiments/MDP/PPGtoABP/Results) folder.
+
+```bash
+cd Experiments/MDP/PPGtoABP
+python evaluation.py
+``` 
 
 
 
