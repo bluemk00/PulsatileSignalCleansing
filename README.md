@@ -3,7 +3,7 @@
 
 ## Overview
 
-This repository contains the Phthon code for `Salient Facets in Artificial Intelligence for Cleansing Pulsatile Physiological Signals: Knowledge Incorporation, Real-Time Dynamics, Assessment Entities, and Technology Acceptance`. Our research focuses on the experimental validation of four aspects for the clinical application of cleansing pulsatile physiological signals.
+This repository contains the Python code for `Salient Facets in Artificial Intelligence for Cleansing Pulsatile Physiological Signals: Knowledge Incorporation, Real-Time Dynamics, Assessment Entities, and Technology Acceptance`. Our research focuses on the experimental validation of four aspects for the clinical application of cleansing pulsatile physiological signals.
 
 
 ## Library Dependencies
