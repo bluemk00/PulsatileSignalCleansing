@@ -23,9 +23,6 @@ This repository contains the Phthon code for `Salient Facets in Artificial Intel
 
 ## Contact Information
 
-If you plan to use this simulator for your research or if you need specific details about the implementation, please contact the author(s) before proceeding. This will ensure you have the most up-to-date information and guidance. Contact details can be found below:
-
-
 
 - **Email:** [lyjune0070@gmail.com, bluemk00@gmail.com]
 
