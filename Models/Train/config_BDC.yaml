@@ -16,8 +16,8 @@ model:
 
 mimic3:
   paths:
-    train: '../ProcessedData/MIMIC3_ABP/MIMIC_ART_TrSet.npy'
-    valid: '../ProcessedData/MIMIC3_ABP/MIMIC_ART_ValSet.npy'
+    train: '../ProcessedData/MIMIC3_ABP/MIMIC_ABP_TrSet.npy'
+    valid: '../ProcessedData/MIMIC3_ABP/MIMIC_ABP_ValSet.npy'
 
 output:
   directory: './ModelResults/ABPCleansing/BDC/'

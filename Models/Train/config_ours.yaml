@@ -14,8 +14,8 @@ model:
   dropout_rate: 0.0
   mimic3:
     paths:
-      train: '../ProcessedData/MIMIC3_ABP/MIMIC_ART_TrSet.npy'
-      valid: '../ProcessedData/MIMIC3_ABP/MIMIC_ART_ValSet.npy'
+      train: '../ProcessedData/MIMIC3_ABP/MIMIC_ABP_TrSet.npy'
+      valid: '../ProcessedData/MIMIC3_ABP/MIMIC_ABP_ValSet.npy'
   refer_min: 20.0
   refer_max: 220.0
 
@@ -25,8 +25,8 @@ model:
   # dropout_rate: 0.0
   # mimic3:
   #   paths:
-  #     train: '../ProcessedData/MIMIC3_ABP/MIMIC_ART_TrSet.npy'
-  #     valid: '../ProcessedData/MIMIC3_ABP/MIMIC_ART_ValSet.npy'
+  #     train: '../ProcessedData/MIMIC3_ABP/MIMIC_ABP_TrSet.npy'
+  #     valid: '../ProcessedData/MIMIC3_ABP/MIMIC_ABP_ValSet.npy'
   # refer_min: 20.0
   # refer_max: 220.0
   
@@ -36,8 +36,8 @@ model:
   # dropout_rate: 0.0
   # mimic3:
   #   paths:
-  #     train: '../ProcessedData/MIMIC3_ABP/MIMIC_ART_TrSet.npy'
-  #     valid: '../ProcessedData/MIMIC3_ABP/MIMIC_ART_ValSet.npy'
+  #     train: '../ProcessedData/MIMIC3_ABP/MIMIC_ABP_TrSet.npy'
+  #     valid: '../ProcessedData/MIMIC3_ABP/MIMIC_ABP_ValSet.npy'
   # refer_min: 20.0
   # refer_max: 220.0
   
