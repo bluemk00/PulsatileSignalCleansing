@@ -74,9 +74,9 @@ if __name__ == "__main__":
     # Save results to CSV
     result_path = './Results/'
     os.makedirs(result_path, exist_ok=True)
-    result_for_PPG.to_csv(result_path + 'MCP_for_PPG_Cleansing_1.csv', index=False)
+    result_for_PPG.to_csv(result_path + 'MCP_for_PPG_Cleansing.csv', index=False)
 
     # Save mean metrics for each model
     result_for_PPG['Model Type'] = pd.Categorical(result_for_PPG['Model Type'], categories=model_list, ordered=True)
     result_for_PPG_mean = result_for_PPG.groupby('Model Type').mean()
-    result_for_PPG_mean.to_csv(result_path + 'MCP_for_PPG_Cleansing_mean_1.csv')
+    result_for_PPG_mean.to_csv(result_path + 'MCP_for_PPG_Cleansing_mean.csv')

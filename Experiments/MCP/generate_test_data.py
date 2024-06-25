@@ -67,8 +67,6 @@ if __name__ == "__main__":
     mask0 = np.load(file_path + 'Original/VitalDB_ABP_mask0.npy')
     mask1 = np.load(file_path + 'Original/VitalDB_ABP_mask1.npy')
 
-    result_for_ABP = pd.DataFrame(columns=['Model Type', 'Artifact Type', 'MSE', 'MAE', 'MRE', 'MKLD'])
-
     # Evaluation loop
     for i in range(len(artifact_list)):
         artifact_type = artifact_list[i]
@@ -86,25 +84,11 @@ if __name__ == "__main__":
             else:
                 continue
 
-            mse, mae, mre = calculate_mse_mae_mre(target * 200.0 + 20.0, pred * 200.0 + 20.0)
-            mkld, _ = compute_kld_vector(target * 200.0 + 20.0, pred * 200.0 + 20.0, subpart_len=500)
-            result_for_ABP.loc[len(result_for_ABP)] = [model_name, artifact_type, mse, mae, mre, mkld]
-
             # Uncomment to save the prediction outcomes.
             save_path = file_path + f'{model_name}_pred/'
             os.makedirs(save_path, exist_ok=True)
             np.save(save_path + f'Pred_{model_name}_{artifact_type}.npy', pred)
 
-    # Save results to CSV
-    result_path = './Results/'
-    os.makedirs(result_path, exist_ok=True)
-    result_for_ABP.to_csv(result_path + 'MCP_for_ABP_Cleansing.csv', index=False)
-
-    # Save mean metrics for each model
-    result_path = './Results/'
-    result_for_ABP['Model Type'] = pd.Categorical(result_for_ABP['Model Type'], categories=model_list, ordered=True)
-    result_for_ABP_mean = result_for_ABP.groupby('Model Type').mean()
-    result_for_ABP_mean.to_csv(result_path + 'MCP_for_ABP_Cleansing_mean.csv')
 
     # External Validation for PPG Cleansing
     PPG_model_path = '../../Models/BestModels/PPG/'
@@ -119,8 +103,6 @@ if __name__ == "__main__":
     target = true[:, -500:]
     mask0 = np.load(file_path + 'Original/VitalDB_PPG_mask0.npy')
     mask1 = np.load(file_path + 'Original/VitalDB_PPG_mask1.npy')
-
-    result_for_PPG = pd.DataFrame(columns=['Model Type', 'Artifact Type', 'MSE', 'MAE', 'MRE', 'MKLD'])
 
     # Evaluation loop
     for i in range(len(artifact_list)):
@@ -139,19 +121,7 @@ if __name__ == "__main__":
             else:
                 continue
 
-            mse, mae, mre = calculate_mse_mae_mre(target * 100.0, pred * 100.0)
-            mkld, _ = compute_kld_vector(target * 100.0, pred * 100.0, subpart_len=500)
-            result_for_PPG.loc[len(result_for_PPG)] = [model_name, artifact_type, mse, mae, mre, mkld]
-
             # Uncomment to save the prediction outcomes.
             save_path = file_path + f'{model_name}_pred/'
             os.makedirs(save_path, exist_ok=True)
             np.save(save_path + f'Pred_{model_name}_{artifact_type}.npy', pred)
-
-    # Save results to CSV
-    result_for_PPG.to_csv(result_path + 'MCP_for_PPG_Cleansing.csv', index=False)
-
-    # Save mean metrics for each model
-    result_for_PPG['Model Type'] = pd.Categorical(result_for_PPG['Model Type'], categories=model_list, ordered=True)
-    result_for_PPG_mean = result_for_PPG.groupby('Model Type').mean()
-    result_for_PPG_mean.to_csv(result_path + 'MCP_for_PPG_Cleansing_mean.csv')
