@@ -58,7 +58,7 @@ python evaluation.py
 ## Contact Information
 
 
-- **Email:** [lyjune0070@gmail.com, bluemk00@gmail.com]
+- **Email:** [bluemk00@gmail.com, lyjune0070@gmail.com]
 
 - **Institution:** [Department of Cancer AI and Digital Health, Graduate School of Cancer Science & Policy, National Cancer Center, KOREA]
 
