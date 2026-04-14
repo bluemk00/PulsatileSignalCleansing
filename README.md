@@ -15,10 +15,7 @@ This repository contains the Python code for **Development and Multi-Faceted Eva
 
 ## Code Overview and Execution Guide
 
-This repository includes instructions for running two of the metric-based evaluations among the three experimental assessments in our research. You can download the processed data via the link below.
-
-[Download the processed data here](https://www.dropbox.com/scl/fo/lxdqh9p1fqvhip7dcfrbe/AGhSbWSU45kqVVjU0bVWM0o?rlkey=etlsztymn8lyw72nbkt68qgv6&dl=1)
-
+This repository includes instructions for running two of the metric-based evaluations among the three experimental assessments in our research. The processed data are derived from the MIMIC-III Waveform Database, which is available via PhysioNet under the Open Database License (ODbL). The download link will be provided upon reasonable request to the corresponding author.
 
 
 ### Model-based Cleansing Performance (MCP)
