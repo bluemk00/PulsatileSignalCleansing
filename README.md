@@ -60,7 +60,7 @@ python evaluation.py
 
 - **Email:** [bluemk00@gmail.com]
 
-- **Institution:** [Department of Cancer AI and Digital Health, Graduate School of Cancer Science & Policy, National Cancer Center, KOREA]
+- **Institution:** [Graduate School of Cancer Science & Policy, National Cancer Center, KOREA]
 
 
 
